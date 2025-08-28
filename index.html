@@ -1,0 +1,2613 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMK Putra Teknologi - Sekolah Menengah Kejuruan Unggulan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar-transition {
+            transition: transform 0.3s ease;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+        }
+        .table-row:hover {
+            background-color: #f8fafc;
+        }
+        .action-btn {
+            transition: all 0.2s ease;
+        }
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        .login-required {
+            filter: blur(2px);
+            pointer-events: none;
+        }
+        .image-preview {
+            max-width: 200px;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center modal-backdrop hidden">
+        <div class="bg-white rounded-lg w-full max-w-md mx-4">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-semibold text-gray-800">Login Admin</h3>
+                    <button onclick="hideLoginModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <form onsubmit="handleLogin(event)" class="p-6">
+                <div class="space-y-4">
+                    <div>
+                        <label for="loginEmail" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="loginEmail" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="admin@smkputrateknologi.sch.id">
+                    </div>
+                    <div>
+                        <label for="loginPassword" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <div class="relative">
+                            <input type="password" id="loginPassword" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Masukkan password">
+                            <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                <i id="passwordToggleIcon" class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="loginError" class="text-red-600 text-sm hidden"></div>
+                </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login
+                    </button>
+                </div>
+            </form>
+            <div class="px-6 pb-6">
+                <div class="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
+                    <strong>Demo Credentials:</strong><br>
+                    Email: admin@smkputrateknologi.sch.id<br>
+                    Password: PASSword
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center">
+                        <img src="assets/logo.png" alt=""></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">SMK Putra Teknologi</h1>
+                        <p class="text-xs text-gray-600">Excellence in Technology Education</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="text-gray-700 hover:text-blue-600 font-medium">Beranda</a>
+                    <a href="#programs" class="text-gray-700 hover:text-blue-600 font-medium">Program Keahlian</a>
+                    <a href="#facilities" class="text-gray-700 hover:text-blue-600 font-medium">Fasilitas</a>
+                    <a href="#news" class="text-gray-700 hover:text-blue-600 font-medium">Berita</a>
+                    <a href="#contact" class="text-gray-700 hover:text-blue-600 font-medium">Kontak</a>
+                    <button onclick="checkLoginAndShowDashboard()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Dashboard</button>
+                </div>
+                <button class="md:hidden text-gray-700" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden">
+        <div class="bg-white w-64 h-full p-6">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-lg font-bold">Menu</h2>
+                <button onclick="toggleMobileMenu()">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <a href="#home" class="block text-gray-700 hover:text-blue-600 font-medium">Beranda</a>
+                <a href="#programs" class="block text-gray-700 hover:text-blue-600 font-medium">Program Keahlian</a>
+                <a href="#facilities" class="block text-gray-700 hover:text-blue-600 font-medium">Fasilitas</a>
+                <a href="#news" class="block text-gray-700 hover:text-blue-600 font-medium">Berita</a>
+                <a href="#contact" class="block text-gray-700 hover:text-blue-600 font-medium">Kontak</a>
+                <button onclick="checkLoginAndShowDashboard()" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Landing Page Content -->
+    <div id="landingPage">
+        <!-- Hero Section -->
+        <section id="home" class="hero-bg pt-20 pb-16">
+            <div class="max-w-7xl mx-auto px-4 py-16">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="text-white">
+                        <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                            Wujudkan Masa Depan Teknologi Bersama Kami
+                        </h1>
+                        <p class="text-xl mb-8 opacity-90">
+                            SMK Putra Teknologi menghadirkan pendidikan kejuruan berkualitas tinggi dengan teknologi terdepan untuk mempersiapkan generasi masa depan.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                                Daftar Sekarang
+                            </button>
+                            <button onclick="checkLoginAndShowDashboard(); showDashboardSection('news')" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition">
+                                Kelola Berita
+                            </button>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-white bg-opacity-20 rounded-lg p-4 text-center text-white">
+                                    <i class="fas fa-users text-3xl mb-2"></i>
+                                    <h3 class="font-bold" id="heroStudentCount">1500+</h3>
+                                    <p class="text-sm">Siswa Aktif</p>
+                                </div>
+                                <div class="bg-white bg-opacity-20 rounded-lg p-4 text-center text-white">
+                                    <i class="fas fa-award text-3xl mb-2"></i>
+                                    <h3 class="font-bold">95%</h3>
+                                    <p class="text-sm">Tingkat Kelulusan</p>
+                                </div>
+                                <div class="bg-white bg-opacity-20 rounded-lg p-4 text-center text-white">
+                                    <i class="fas fa-briefcase text-3xl mb-2"></i>
+                                    <h3 class="font-bold">85%</h3>
+                                    <p class="text-sm">Langsung Kerja</p>
+                                </div>
+                                <div class="bg-white bg-opacity-20 rounded-lg p-4 text-center text-white">
+                                    <i class="fas fa-trophy text-3xl mb-2"></i>
+                                    <h3 class="font-bold">50+</h3>
+                                    <p class="text-sm">Prestasi</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Programs Section -->
+        <section id="programs" class="py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Program Keahlian</h2>
+                    <p class="text-xl text-gray-600">Pilih program keahlian sesuai minat dan bakat Anda</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="card-hover bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                        <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas fa-laptop-code text-blue-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Rekayasa Perangkat Lunak</h3>
+                        <p class="text-gray-600 mb-4">Pelajari pengembangan aplikasi web, mobile, dan desktop dengan teknologi terkini.</p>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Web Development</li>
+                            <li>• Mobile App Development</li>
+                            <li>• Database Management</li>
+                            <li>• UI/UX Design</li>
+                        </ul>
+                    </div>
+                    <div class="card-hover bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                        <div class="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas fa-network-wired text-green-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Teknik Komputer Jaringan</h3>
+                        <p class="text-gray-600 mb-4">Kuasai teknologi jaringan komputer dan keamanan sistem informasi.</p>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Network Administration</li>
+                            <li>• Cyber Security</li>
+                            <li>• Server Management</li>
+                            <li>• Wireless Technology</li>
+                        </ul>
+                    </div>
+                    <div class="card-hover bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                        <div class="w-16 h-16 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas fa-microchip text-purple-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Teknik Elektronika Industri</h3>
+                        <p class="text-gray-600 mb-4">Pelajari sistem kontrol otomatis dan teknologi industri 4.0.</p>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• PLC Programming</li>
+                            <li>• Industrial Automation</li>
+                            <li>• Robotics</li>
+                            <li>• IoT Systems</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Facilities Section -->
+        <section id="facilities" class="py-16 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Fasilitas Unggulan</h2>
+                    <p class="text-xl text-gray-600">Fasilitas modern untuk mendukung pembelajaran optimal</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white rounded-lg p-6 text-center shadow-md">
+                        <i class="fas fa-desktop text-4xl text-blue-600 mb-4"></i>
+                        <h3 class="font-bold text-gray-800 mb-2">Lab Komputer</h3>
+                        <p class="text-gray-600 text-sm">50+ unit komputer dengan spesifikasi tinggi</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 text-center shadow-md">
+                        <i class="fas fa-wifi text-4xl text-green-600 mb-4"></i>
+                        <h3 class="font-bold text-gray-800 mb-2">Internet Fiber</h3>
+                        <p class="text-gray-600 text-sm">Koneksi internet berkecepatan tinggi</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 text-center shadow-md">
+                        <i class="fas fa-tools text-4xl text-orange-600 mb-4"></i>
+                        <h3 class="font-bold text-gray-800 mb-2">Workshop</h3>
+                        <p class="text-gray-600 text-sm">Bengkel praktik dengan peralatan lengkap</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 text-center shadow-md">
+                        <i class="fas fa-book text-4xl text-purple-600 mb-4"></i>
+                        <h3 class="font-bold text-gray-800 mb-2">Perpustakaan</h3>
+                        <p class="text-gray-600 text-sm">Koleksi buku dan e-book terlengkap</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section id="news" class="py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Berita & Kegiatan</h2>
+                    <p class="text-xl text-gray-600 mb-6">Update terbaru dari SMK Putra Teknologi</p>
+                    <button onclick="checkLoginAndShowDashboard(); showDashboardSection('news')" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-newspaper mr-2"></i>Lihat Semua Berita
+                    </button>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8" id="landingNewsGrid">
+                    <!-- News will be populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-16 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Hubungi Kami</h2>
+                    <p class="text-xl text-gray-600">Punya pertanyaan? Kami siap membantu Anda</p>
+                </div>
+                
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <!-- Contact Info -->
+                    <div class="space-y-8">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800 mb-6">Informasi Kontak</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-map-marker-alt text-blue-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Alamat</h4>
+                                        <p class="text-gray-600">Jl. Teknologi Raya No. 123<br>Jakarta Selatan, DKI Jakarta 12560</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-phone text-green-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Telepon</h4>
+                                        <p class="text-gray-600">(021) 1234-5678<br>(021) 8765-4321</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-envelope text-purple-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Email</h4>
+                                        <p class="text-gray-600">info@smkputrateknologi.sch.id<br>admin@smkputrateknologi.sch.id</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-clock text-orange-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Jam Operasional</h4>
+                                        <p class="text-gray-600">Senin - Jumat: 07:00 - 16:00<br>Sabtu: 07:00 - 12:00</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Social Media -->
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Ikuti Kami</h3>
+                            <div class="flex space-x-4">
+                                <a href="#" class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white hover:bg-blue-700 transition">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center text-white hover:bg-blue-500 transition">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="w-12 h-12 bg-pink-600 rounded-lg flex items-center justify-center text-white hover:bg-pink-700 transition">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center text-white hover:bg-red-700 transition">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Form -->
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6">Kirim Pesan</h3>
+                        <form onsubmit="submitContactForm(event)" class="space-y-6">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="contactName" class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                                    <input type="text" id="contactName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="contactEmail" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                    <input type="email" id="contactEmail" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="contactPhone" class="block text-sm font-medium text-gray-700 mb-2">Nomor Telepon</label>
+                                    <input type="tel" id="contactPhone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="contactCategory" class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
+                                    <select id="contactCategory" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Pilih Kategori</option>
+                                        <option value="Informasi Pendaftaran">Informasi Pendaftaran</option>
+                                        <option value="Program Keahlian">Program Keahlian</option>
+                                        <option value="Fasilitas">Fasilitas</option>
+                                        <option value="Kerjasama">Kerjasama</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="contactSubject" class="block text-sm font-medium text-gray-700 mb-2">Subjek</label>
+                                <input type="text" id="contactSubject" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            
+                            <div>
+                                <label for="contactMessage" class="block text-sm font-medium text-gray-700 mb-2">Pesan</label>
+                                <textarea id="contactMessage" rows="5" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                                <i class="fas fa-paper-plane mr-2"></i>Kirim Pesan
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="hidden min-h-screen bg-gray-50">
+        <!-- Dashboard Sidebar -->
+        <aside class="fixed left-0 top-0 w-64 h-full bg-white shadow-lg z-40 sidebar-transition">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-graduation-cap text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-gray-800">SMK Putra Teknologi</h1>
+                        <p class="text-xs text-gray-600">Dashboard Admin</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <button onclick="showDashboardSection('overview')" class="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition dashboard-nav-btn" data-section="overview">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>Overview</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showDashboardSection('students')" class="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition dashboard-nav-btn" data-section="students">
+                            <i class="fas fa-users"></i>
+                            <span>Data Siswa</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showDashboardSection('teachers')" class="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition dashboard-nav-btn" data-section="teachers">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <span>Data Guru</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showDashboardSection('classes')" class="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition dashboard-nav-btn" data-section="classes">
+                            <i class="fas fa-school"></i>
+                            <span>Data Kelas</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showDashboardSection('news')" class="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition dashboard-nav-btn" data-section="news">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Berita</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showDashboardSection('inbox')" class="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition dashboard-nav-btn" data-section="inbox">
+                            <i class="fas fa-inbox"></i>
+                            <span>Kotak Masuk</span>
+                            <span id="unreadCount" class="bg-red-500 text-white text-xs px-2 py-1 rounded-full ml-auto hidden">0</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="absolute bottom-4 left-4 right-4 space-y-2">
+                <div class="text-xs text-gray-500 px-4">
+                    <i class="fas fa-user-circle mr-1"></i>
+                    <span id="loggedInUser">Admin</span>
+                </div>
+                <button onclick="logout()" class="w-full flex items-center justify-center space-x-2 px-4 py-3 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+                <button onclick="hideDashboard()" class="w-full flex items-center justify-center space-x-2 px-4 py-3 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Kembali ke Website</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Dashboard Main Content -->
+        <div class="ml-64">
+            <!-- Dashboard Header -->
+            <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800" id="dashboardTitle">Dashboard Overview</h1>
+                        <p class="text-gray-600" id="dashboardSubtitle">Selamat datang di panel admin SMK Putra Teknologi</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right">
+                            <p class="text-sm text-gray-600">Admin</p>
+                            <p class="text-xs text-gray-500" id="currentDateTime"></p>
+                        </div>
+                        <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <main class="p-6">
+                <!-- Overview Section -->
+                <div id="overviewSection" class="dashboard-section">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600">Total Siswa</p>
+                                    <p class="text-3xl font-bold text-gray-900" id="totalStudents">0</p>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-users text-blue-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600">Total Guru</p>
+                                    <p class="text-3xl font-bold text-gray-900" id="totalTeachers">0</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-chalkboard-teacher text-green-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600">Total Kelas</p>
+                                    <p class="text-3xl font-bold text-gray-900" id="totalClasses">0</p>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-school text-purple-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600">Tingkat Kehadiran</p>
+                                    <p class="text-3xl font-bold text-gray-900">94%</p>
+                                </div>
+                                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-chart-line text-orange-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Distribusi Siswa per Jurusan</h3>
+                            <div class="space-y-4" id="majorDistribution">
+                                <!-- Distribution will be populated dynamically -->
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Aktivitas Terbaru</h3>
+                            <div class="space-y-4" id="recentActivities">
+                                <!-- Activities will be populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students Section -->
+                <div id="studentsSection" class="dashboard-section hidden">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold text-gray-800">Data Siswa</h2>
+                                <button onclick="showAddStudentModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Tambah Siswa</span>
+                                </button>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <div class="flex-1">
+                                    <input type="text" id="searchStudents" placeholder="Cari siswa..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <select id="filterStudentMajor" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Semua Jurusan</option>
+                                    <option value="RPL">RPL</option>
+                                    <option value="TKJ">TKJ</option>
+                                    <option value="TEI">TEI</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="overflow-x-auto">
+                                <table class="w-full table-auto">
+                                    <thead>
+                                        <tr class="bg-gray-50">
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">NIS</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kelas</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jurusan</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentsTableBody" class="bg-white divide-y divide-gray-200">
+                                        <!-- Students data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teachers Section -->
+                <div id="teachersSection" class="dashboard-section hidden">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold text-gray-800">Data Guru</h2>
+                                <button onclick="showAddTeacherModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Tambah Guru</span>
+                                </button>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <div class="flex-1">
+                                    <input type="text" id="searchTeachers" placeholder="Cari guru..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <select id="filterTeacherStatus" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Semua Status</option>
+                                    <option value="Aktif">Aktif</option>
+                                    <option value="Cuti">Cuti</option>
+                                    <option value="Non-Aktif">Non-Aktif</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="overflow-x-auto">
+                                <table class="w-full table-auto">
+                                    <thead>
+                                        <tr class="bg-gray-50">
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">NIP</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mata Pelajaran</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Telepon</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="teachersTableBody" class="bg-white divide-y divide-gray-200">
+                                        <!-- Teachers data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Classes Section -->
+                <div id="classesSection" class="dashboard-section hidden">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold text-gray-800">Data Kelas</h2>
+                                <button onclick="showAddClassModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Tambah Kelas</span>
+                                </button>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <div class="flex-1">
+                                    <input type="text" id="searchClasses" placeholder="Cari kelas..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <select id="filterClassMajor" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Semua Jurusan</option>
+                                    <option value="RPL">RPL</option>
+                                    <option value="TKJ">TKJ</option>
+                                    <option value="TEI">TEI</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="overflow-x-auto">
+                                <table class="w-full table-auto">
+                                    <thead>
+                                        <tr class="bg-gray-50">
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kode Kelas</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Kelas</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jurusan</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Wali Kelas</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kapasitas</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jumlah Siswa</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="classesTableBody" class="bg-white divide-y divide-gray-200">
+                                        <!-- Classes data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- News Section -->
+                <div id="newsSection" class="dashboard-section hidden">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold text-gray-800">Berita & Artikel</h2>
+                                <button onclick="showAddNewsModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Tambah Berita</span>
+                                </button>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <div class="flex-1">
+                                    <input type="text" id="searchNews" placeholder="Cari berita..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <select id="filterNewsCategory" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Semua Kategori</option>
+                                    <option value="Prestasi">Prestasi</option>
+                                    <option value="Kegiatan">Kegiatan</option>
+                                    <option value="Pengumuman">Pengumuman</option>
+                                    <option value="Kerjasama">Kerjasama</option>
+                                </select>
+                                <select id="filterNewsStatus" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Semua Status</option>
+                                    <option value="Published">Published</option>
+                                    <option value="Draft">Draft</option>
+                                    <option value="Archived">Archived</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="overflow-x-auto">
+                                <table class="w-full table-auto">
+                                    <thead>
+                                        <tr class="bg-gray-50">
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Judul</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Gambar</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kategori</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Views</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="newsTableBody" class="bg-white divide-y divide-gray-200">
+                                        <!-- News data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inbox Section -->
+                <div id="inboxSection" class="dashboard-section hidden">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold text-gray-800">Kotak Masuk</h2>
+                                <button onclick="deleteAllMessages()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center space-x-2">
+                                    <i class="fas fa-trash-alt"></i>
+                                    <span>Hapus Semua</span>
+                                </button>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <div class="flex-1">
+                                    <input type="text" id="searchMessages" placeholder="Cari pesan..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <select id="filterMessageCategory" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Semua Kategori</option>
+                                    <option value="Informasi Pendaftaran">Informasi Pendaftaran</option>
+                                    <option value="Program Keahlian">Program Keahlian</option>
+                                    <option value="Fasilitas">Fasilitas</option>
+                                    <option value="Kerjasama">Kerjasama</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                                <select id="filterMessageStatus" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Semua Status</option>
+                                    <option value="unread">Belum Dibaca</option>
+                                    <option value="read">Sudah Dibaca</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div id="messagesContainer" class="space-y-4">
+                                <!-- Messages will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Student Modal -->
+    <div id="studentModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-lg w-full max-w-2xl mx-4 max-h-screen overflow-y-auto">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-semibold text-gray-800" id="studentModalTitle">Tambah Siswa Baru</h3>
+                    <button onclick="hideStudentModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <form onsubmit="saveStudent(event)" class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="studentNIS" class="block text-sm font-medium text-gray-700 mb-2">NIS</label>
+                        <input type="text" id="studentNIS" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="studentName" class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                        <input type="text" id="studentName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="studentClass" class="block text-sm font-medium text-gray-700 mb-2">Kelas</label>
+                        <input type="text" id="studentClass" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="studentMajor" class="block text-sm font-medium text-gray-700 mb-2">Jurusan</label>
+                        <select id="studentMajor" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Pilih Jurusan</option>
+                            <option value="RPL">Rekayasa Perangkat Lunak</option>
+                            <option value="TKJ">Teknik Komputer Jaringan</option>
+                            <option value="TEI">Teknik Elektronika Industri</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="studentEmail" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="studentEmail" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="studentStatus" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                        <select id="studentStatus" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Cuti">Cuti</option>
+                            <option value="Non-Aktif">Non-Aktif</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" onclick="hideStudentModal()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Teacher Modal -->
+    <div id="teacherModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-lg w-full max-w-2xl mx-4 max-h-screen overflow-y-auto">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-semibold text-gray-800" id="teacherModalTitle">Tambah Guru Baru</h3>
+                    <button onclick="hideTeacherModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <form onsubmit="saveTeacher(event)" class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="teacherNIP" class="block text-sm font-medium text-gray-700 mb-2">NIP</label>
+                        <input type="text" id="teacherNIP" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="teacherName" class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                        <input type="text" id="teacherName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="teacherSubject" class="block text-sm font-medium text-gray-700 mb-2">Mata Pelajaran</label>
+                        <input type="text" id="teacherSubject" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="teacherEmail" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="teacherEmail" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="teacherPhone" class="block text-sm font-medium text-gray-700 mb-2">Telepon</label>
+                        <input type="tel" id="teacherPhone" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="teacherStatus" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                        <select id="teacherStatus" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Cuti">Cuti</option>
+                            <option value="Non-Aktif">Non-Aktif</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" onclick="hideTeacherModal()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Class Modal -->
+    <div id="classModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-lg w-full max-w-2xl mx-4 max-h-screen overflow-y-auto">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-semibold text-gray-800" id="classModalTitle">Tambah Kelas Baru</h3>
+                    <button onclick="hideClassModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <form onsubmit="saveClass(event)" class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="classCode" class="block text-sm font-medium text-gray-700 mb-2">Kode Kelas</label>
+                        <input type="text" id="classCode" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="className" class="block text-sm font-medium text-gray-700 mb-2">Nama Kelas</label>
+                        <input type="text" id="className" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="classMajor" class="block text-sm font-medium text-gray-700 mb-2">Jurusan</label>
+                        <select id="classMajor" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Pilih Jurusan</option>
+                            <option value="RPL">Rekayasa Perangkat Lunak</option>
+                            <option value="TKJ">Teknik Komputer Jaringan</option>
+                            <option value="TEI">Teknik Elektronika Industri</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="classTeacher" class="block text-sm font-medium text-gray-700 mb-2">Wali Kelas</label>
+                        <input type="text" id="classTeacher" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="classCapacity" class="block text-sm font-medium text-gray-700 mb-2">Kapasitas</label>
+                        <input type="number" id="classCapacity" required min="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="classStudentCount" class="block text-sm font-medium text-gray-700 mb-2">Jumlah Siswa</label>
+                        <input type="number" id="classStudentCount" required min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" onclick="hideClassModal()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- News Modal -->
+    <div id="newsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-lg w-full max-w-4xl mx-4 max-h-screen overflow-y-auto">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-semibold text-gray-800" id="newsModalTitle">Tambah Berita Baru</h3>
+                    <button onclick="hideNewsModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <form onsubmit="saveNews(event)" class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label for="newsTitle" class="block text-sm font-medium text-gray-700 mb-2">Judul Berita</label>
+                        <input type="text" id="newsTitle" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="newsCategory" class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
+                        <select id="newsCategory" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Pilih Kategori</option>
+                            <option value="Prestasi">Prestasi</option>
+                            <option value="Kegiatan">Kegiatan</option>
+                            <option value="Pengumuman">Pengumuman</option>
+                            <option value="Kerjasama">Kerjasama</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="newsStatus" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                        <select id="newsStatus" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="Draft">Draft</option>
+                            <option value="Published">Published</option>
+                            <option value="Archived">Archived</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="newsDate" class="block text-sm font-medium text-gray-700 mb-2">Tanggal</label>
+                        <input type="date" id="newsDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="newsAuthor" class="block text-sm font-medium text-gray-700 mb-2">Penulis</label>
+                        <input type="text" id="newsAuthor" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="newsTags" class="block text-sm font-medium text-gray-700 mb-2">Tags (pisahkan dengan koma)</label>
+                        <input type="text" id="newsTags" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                
+                <!-- Image Upload Section -->
+                <div class="mb-6">
+                    <label for="newsImage" class="block text-sm font-medium text-gray-700 mb-2">Gambar Berita</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                        <input type="file" id="newsImage" accept="image/*" onchange="previewNewsImage(event)" class="hidden">
+                        <div id="imageUploadArea" onclick="document.getElementById('newsImage').click()" class="cursor-pointer">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                            <p class="text-gray-600 mb-2">Klik untuk upload gambar atau drag & drop</p>
+                            <p class="text-sm text-gray-500">PNG, JPG, GIF hingga 10MB</p>
+                        </div>
+                        <div id="imagePreviewArea" class="hidden">
+                            <img id="imagePreview" class="image-preview mx-auto mb-4" alt="Preview">
+                            <p class="text-sm text-gray-600 mb-2" id="imageFileName"></p>
+                            <button type="button" onclick="removeNewsImage()" class="text-red-600 hover:text-red-800 text-sm">
+                                <i class="fas fa-trash mr-1"></i>Hapus Gambar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="newsExcerpt" class="block text-sm font-medium text-gray-700 mb-2">Ringkasan</label>
+                    <textarea id="newsExcerpt" rows="3" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+                <div class="mb-6">
+                    <label for="newsContent" class="block text-sm font-medium text-gray-700 mb-2">Konten</label>
+                    <textarea id="newsContent" rows="10" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" onclick="hideNewsModal()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- News Detail Modal -->
+    <div id="newsDetailModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-lg w-full max-w-4xl mx-4 max-h-screen overflow-y-auto">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-semibold text-gray-800" id="newsDetailTitle">Detail Berita</h3>
+                    <button onclick="hideNewsDetailModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6" id="newsDetailContent">
+                <!-- News detail content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Detail Modal -->
+    <div id="messageDetailModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-lg w-full max-w-3xl mx-4 max-h-screen overflow-y-auto">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-semibold text-gray-800" id="messageDetailTitle">Detail Pesan</h3>
+                    <button onclick="hideMessageDetailModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6" id="messageDetailContent">
+                <!-- Message detail content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-lg p-6 w-full max-w-sm mx-4">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Konfirmasi Hapus</h3>
+                <p class="text-gray-600 mb-6" id="confirmMessage">Apakah Anda yakin ingin menghapus data ini?</p>
+                <div class="flex justify-center space-x-3">
+                    <button onclick="hideConfirmModal()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Batal</button>
+                    <button onclick="confirmDelete()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentEditId = null;
+        let currentEditType = null;
+        let deleteCallback = null;
+        let isLoggedIn = false;
+        let uploadedImages = {}; // Store uploaded images by news ID
+
+        // Login credentials
+        const ADMIN_EMAIL = 'admin@smkputrateknologi.sch.id';
+        const ADMIN_PASSWORD = 'PASSword';
+
+        // Sample data storage with more comprehensive data
+        let students = [
+            { id: 1, nis: '2024001', name: 'Ahmad Rizki Pratama', class: 'XII RPL 1', major: 'RPL', email: 'ahmad.rizki@student.smkputrateknologi.sch.id', status: 'Aktif' },
+            { id: 2, nis: '2024002', name: 'Siti Nurhaliza', class: 'XII TKJ 1', major: 'TKJ', email: 'siti.nurhaliza@student.smkputrateknologi.sch.id', status: 'Aktif' },
+            { id: 3, nis: '2024003', name: 'Budi Santoso', class: 'XI TEI 1', major: 'TEI', email: 'budi.santoso@student.smkputrateknologi.sch.id', status: 'Aktif' },
+            { id: 4, nis: '2024004', name: 'Dewi Sartika', class: 'X RPL 2', major: 'RPL', email: 'dewi.sartika@student.smkputrateknologi.sch.id', status: 'Aktif' },
+            { id: 5, nis: '2024005', name: 'Andi Wijaya', class: 'XI TKJ 2', major: 'TKJ', email: 'andi.wijaya@student.smkputrateknologi.sch.id', status: 'Cuti' },
+            { id: 6, nis: '2024006', name: 'Maya Putri', class: 'X TEI 1', major: 'TEI', email: 'maya.putri@student.smkputrateknologi.sch.id', status: 'Aktif' },
+            { id: 7, nis: '2024007', name: 'Reza Firmansyah', class: 'XII RPL 2', major: 'RPL', email: 'reza.firmansyah@student.smkputrateknologi.sch.id', status: 'Aktif' },
+            { id: 8, nis: '2024008', name: 'Indira Sari', class: 'XI TKJ 1', major: 'TKJ', email: 'indira.sari@student.smkputrateknologi.sch.id', status: 'Aktif' }
+        ];
+
+        let teachers = [
+            { id: 1, nip: '198501012010011001', name: 'Dr. Agus Setiawan, S.Kom, M.T', subject: 'Pemrograman Web', email: 'agus.setiawan@smkputrateknologi.sch.id', phone: '081234567890', status: 'Aktif' },
+            { id: 2, nip: '198703152012012002', name: 'Sari Indah, S.Kom', subject: 'Jaringan Komputer', email: 'sari.indah@smkputrateknologi.sch.id', phone: '081234567891', status: 'Aktif' },
+            { id: 3, nip: '198902202015011003', name: 'Bambang Sutrisno, S.T', subject: 'Elektronika Digital', email: 'bambang.sutrisno@smkputrateknologi.sch.id', phone: '081234567892', status: 'Aktif' },
+            { id: 4, nip: '199001102018012004', name: 'Maya Sari, S.Pd', subject: 'Bahasa Indonesia', email: 'maya.sari@smkputrateknologi.sch.id', phone: '081234567893', status: 'Aktif' },
+            { id: 5, nip: '198805252019011005', name: 'Dedi Kurniawan, S.Kom', subject: 'Database', email: 'dedi.kurniawan@smkputrateknologi.sch.id', phone: '081234567894', status: 'Cuti' },
+            { id: 6, nip: '199203102020012006', name: 'Rina Wati, S.T', subject: 'Sistem Kontrol', email: 'rina.wati@smkputrateknologi.sch.id', phone: '081234567895', status: 'Aktif' }
+        ];
+
+        let classes = [
+            { id: 1, code: 'XII-RPL-1', name: 'XII RPL 1', major: 'RPL', teacher: 'Dr. Agus Setiawan, S.Kom, M.T', capacity: 36, studentCount: 32 },
+            { id: 2, code: 'XII-TKJ-1', name: 'XII TKJ 1', major: 'TKJ', teacher: 'Sari Indah, S.Kom', capacity: 36, studentCount: 30 },
+            { id: 3, code: 'XI-TEI-1', name: 'XI TEI 1', major: 'TEI', teacher: 'Bambang Sutrisno, S.T', capacity: 36, studentCount: 28 },
+            { id: 4, code: 'X-RPL-2', name: 'X RPL 2', major: 'RPL', teacher: 'Maya Sari, S.Pd', capacity: 36, studentCount: 35 },
+            { id: 5, code: 'XI-TKJ-2', name: 'XI TKJ 2', major: 'TKJ', teacher: 'Dedi Kurniawan, S.Kom', capacity: 36, studentCount: 29 },
+            { id: 6, code: 'X-TEI-1', name: 'X TEI 1', major: 'TEI', teacher: 'Rina Wati, S.T', capacity: 36, studentCount: 31 },
+            { id: 7, code: 'XII-RPL-2', name: 'XII RPL 2', major: 'RPL', teacher: 'Dr. Agus Setiawan, S.Kom, M.T', capacity: 36, studentCount: 33 },
+            { id: 8, code: 'XI-TKJ-1', name: 'XI TKJ 1', major: 'TKJ', teacher: 'Sari Indah, S.Kom', capacity: 36, studentCount: 34 }
+        ];
+
+        let recentActivities = [];
+
+        // Messages data
+        let messages = [
+            {
+                id: 1,
+                name: 'Budi Santoso',
+                email: 'budi.santoso@gmail.com',
+                phone: '081234567890',
+                category: 'Informasi Pendaftaran',
+                subject: 'Pertanyaan tentang Pendaftaran Siswa Baru',
+                message: 'Selamat pagi, saya ingin menanyakan tentang syarat-syarat pendaftaran siswa baru untuk tahun ajaran 2025/2026. Apakah masih ada kuota untuk jurusan RPL? Dan bagaimana prosedur pendaftarannya? Terima kasih.',
+                date: '2024-12-15T14:30:00Z',
+                status: 'unread'
+            },
+            {
+                id: 2,
+                name: 'Siti Nurhaliza',
+                email: 'siti.nurhaliza@yahoo.com',
+                phone: '081987654321',
+                category: 'Program Keahlian',
+                subject: 'Informasi Kurikulum TKJ',
+                message: 'Halo, saya orang tua dari calon siswa. Saya ingin mengetahui lebih detail tentang kurikulum jurusan Teknik Komputer Jaringan. Apakah ada program sertifikasi industri yang disediakan? Dan bagaimana prospek kerja lulusannya?',
+                date: '2024-12-14T10:15:00Z',
+                status: 'read'
+            },
+            {
+                id: 3,
+                name: 'Ahmad Rizki',
+                email: 'ahmad.rizki@hotmail.com',
+                phone: '082345678901',
+                category: 'Fasilitas',
+                subject: 'Pertanyaan tentang Fasilitas Lab',
+                message: 'Saya ingin bertanya tentang fasilitas laboratorium yang tersedia di SMK Putra Teknologi. Apakah lab komputer sudah menggunakan perangkat terbaru? Dan apakah ada lab khusus untuk praktik elektronika?',
+                date: '2024-12-13T16:45:00Z',
+                status: 'unread'
+            },
+            {
+                id: 4,
+                name: 'Maya Putri',
+                email: 'maya.putri@gmail.com',
+                phone: '083456789012',
+                category: 'Kerjasama',
+                subject: 'Proposal Kerjasama Magang',
+                message: 'Kami dari PT Digital Solutions ingin mengajukan proposal kerjasama untuk program magang siswa. Kami tertarik untuk menerima siswa jurusan RPL dan TKJ. Bisakah kami mendapat informasi lebih lanjut tentang prosedur kerjasama?',
+                date: '2024-12-12T09:20:00Z',
+                status: 'read'
+            },
+            {
+                id: 5,
+                name: 'Dewi Sartika',
+                email: 'dewi.sartika@gmail.com',
+                phone: '084567890123',
+                category: 'Lainnya',
+                subject: 'Pertanyaan Biaya Pendidikan',
+                message: 'Selamat siang, saya ingin menanyakan tentang rincian biaya pendidikan di SMK Putra Teknologi. Apakah ada program beasiswa atau keringanan biaya untuk siswa berprestasi? Mohon informasinya.',
+                date: '2024-12-11T13:10:00Z',
+                status: 'unread'
+            }
+        ];
+
+        // News data
+        let news = [
+            {
+                id: 1,
+                title: 'Juara 1 Lomba Programming Tingkat Provinsi',
+                category: 'Prestasi',
+                status: 'Published',
+                date: '2024-12-15',
+                excerpt: 'Tim programming SMK Putra Teknologi berhasil meraih juara 1 dalam kompetisi programming tingkat provinsi dengan mengembangkan aplikasi inovatif.',
+                content: `Tim programming SMK Putra Teknologi yang terdiri dari Ahmad Rizki Pratama (XII RPL 1), Dewi Sartika (X RPL 2), dan Reza Firmansyah (XII RPL 2) berhasil meraih juara 1 dalam Kompetisi Programming Tingkat Provinsi yang diselenggarakan di Jakarta Convention Center.
+
+Kompetisi yang berlangsung selama 3 hari ini diikuti oleh 150 tim dari seluruh SMK di provinsi. Tim SMK Putra Teknologi berhasil mengembangkan aplikasi "EduTracker" - sebuah platform pembelajaran digital yang membantu siswa memantau progress belajar mereka.
+
+"Kami sangat bangga dengan prestasi yang diraih oleh siswa-siswa kami. Ini adalah bukti bahwa kualitas pendidikan di SMK Putra Teknologi sudah diakui secara luas," ujar Dr. Agus Setiawan, S.Kom, M.T selaku pembimbing tim.
+
+Aplikasi EduTracker yang dikembangkan menggunakan teknologi React.js untuk frontend dan Node.js untuk backend, dengan database MongoDB. Aplikasi ini memiliki fitur-fitur canggih seperti AI-powered learning recommendation dan real-time progress tracking.
+
+Sebagai juara 1, tim SMK Putra Teknologi mendapat hadiah uang tunai sebesar Rp 25.000.000 dan kesempatan untuk mengikuti kompetisi tingkat nasional yang akan diselenggarakan bulan depan.`,
+                author: 'Humas SMK Putra Teknologi',
+                tags: 'prestasi, programming, kompetisi, teknologi',
+                views: 1250,
+                createdAt: '2024-12-15T10:30:00Z',
+                image: null
+            },
+            {
+                id: 2,
+                title: 'Kerjasama dengan 5 Perusahaan Teknologi Terkemuka',
+                category: 'Kerjasama',
+                status: 'Published',
+                date: '2024-12-10',
+                excerpt: 'SMK Putra Teknologi menandatangani MoU dengan 5 perusahaan teknologi terkemuka untuk program magang dan penyerapan lulusan.',
+                content: `SMK Putra Teknologi resmi menandatangani Memorandum of Understanding (MoU) dengan 5 perusahaan teknologi terkemuka di Indonesia. Penandatanganan dilakukan di Aula SMK Putra Teknologi dengan disaksikan oleh Kepala Sekolah, para guru, dan perwakilan siswa.
+
+Kelima perusahaan yang menjalin kerjasama adalah:
+1. PT Teknologi Nusantara - Bidang Software Development
+2. PT Digital Inovasi Indonesia - Bidang Mobile App Development  
+3. PT Cyber Security Solutions - Bidang Keamanan Siber
+4. PT Smart Automation - Bidang IoT dan Robotika
+5. PT Data Analytics Pro - Bidang Big Data dan AI
+
+Kerjasama ini mencakup beberapa program strategis:
+- Program magang untuk siswa kelas XI dan XII
+- Sertifikasi industri untuk siswa
+- Pelatihan guru dengan teknologi terbaru
+- Penyerapan lulusan terbaik
+- Bantuan peralatan laboratorium
+
+"Kerjasama ini akan memberikan pengalaman langsung kepada siswa tentang dunia kerja yang sesungguhnya. Mereka akan mendapat kesempatan untuk belajar langsung dari para profesional di bidangnya," kata Kepala Sekolah SMK Putra Teknologi.
+
+Program magang akan dimulai pada semester genap tahun ajaran ini, dengan kuota 50 siswa untuk periode pertama. Siswa yang mengikuti program ini akan mendapat bimbingan langsung dari mentor berpengalaman dan kesempatan untuk terlibat dalam proyek-proyek nyata.`,
+                author: 'Tim Humas',
+                tags: 'kerjasama, industri, magang, teknologi',
+                views: 890,
+                createdAt: '2024-12-10T14:15:00Z',
+                image: null
+            },
+            {
+                id: 3,
+                title: 'Workshop Teknologi AI untuk Siswa Kelas XI dan XII',
+                category: 'Kegiatan',
+                status: 'Published',
+                date: '2024-12-05',
+                excerpt: 'SMK Putra Teknologi mengadakan workshop tentang kecerdasan buatan dan machine learning untuk mempersiapkan siswa menghadapi era digital.',
+                content: `SMK Putra Teknologi mengadakan workshop "Introduction to Artificial Intelligence and Machine Learning" untuk siswa kelas XI dan XII. Workshop yang berlangsung selama 2 hari ini menghadirkan narasumber dari berbagai universitas dan perusahaan teknologi terkemuka.
+
+Materi workshop meliputi:
+- Pengenalan konsep dasar AI dan Machine Learning
+- Implementasi algoritma sederhana menggunakan Python
+- Studi kasus penerapan AI dalam berbagai industri
+- Hands-on practice dengan tools seperti TensorFlow dan Scikit-learn
+- Career path di bidang AI dan Data Science
+
+Dr. Bambang Riyanto, Ph.D dari Institut Teknologi Bandung menjadi keynote speaker dengan topik "AI Revolution: Opportunities and Challenges for Future Workforce". Beliau menekankan pentingnya adaptasi terhadap perkembangan teknologi AI.
+
+"Siswa-siswa SMK harus siap menghadapi revolusi industri 4.0. Pemahaman tentang AI bukan lagi pilihan, tetapi kebutuhan," ujar Dr. Bambang.
+
+Workshop ini diikuti oleh 120 siswa dari jurusan RPL, TKJ, dan TEI. Para siswa terlihat antusias mengikuti setiap sesi, terutama saat praktik langsung membuat model machine learning sederhana.
+
+Sebagai tindak lanjut, sekolah berencana membentuk klub AI dan mengadakan kompetisi internal untuk mengembangkan project berbasis AI. Siswa terbaik akan mendapat kesempatan untuk mengikuti olimpiade AI tingkat nasional.`,
+                author: 'Panitia Workshop AI',
+                tags: 'workshop, AI, machine learning, teknologi, siswa',
+                views: 650,
+                createdAt: '2024-12-05T09:00:00Z',
+                image: null
+            }
+        ];
+
+        // Login functions
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+                isLoggedIn = true;
+                document.getElementById('loginModal').classList.add('hidden');
+                document.getElementById('loggedInUser').textContent = email;
+                showDashboard();
+                addActivity('Admin berhasil login', 'green');
+                errorDiv.classList.add('hidden');
+            } else {
+                errorDiv.textContent = 'Email atau password salah!';
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                isLoggedIn = false;
+                addActivity('Admin logout', 'red');
+                hideDashboard();
+                // Clear login form
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginError').classList.add('hidden');
+            }
+        }
+
+        function checkLoginAndShowDashboard() {
+            if (!isLoggedIn) {
+                document.getElementById("loginModal").classList.remove("hidden");
+            } else {
+                showDashboard();
+            }
+        }
+
+        function hideLoginModal() {
+            document.getElementById("loginModal").classList.add("hidden");
+            document.getElementById("loginError").classList.add("hidden");
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById("loginPassword");
+            const toggleIcon = document.getElementById("passwordToggleIcon");
+            
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleIcon.className = "fas fa-eye-slash";
+            } else {
+                passwordInput.type = "password";
+                toggleIcon.className = "fas fa-eye";
+            }
+        }
+
+        // Image upload functions
+        function previewNewsImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                    alert('Ukuran file terlalu besar. Maksimal 10MB.');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imageUploadArea').classList.add('hidden');
+                    document.getElementById('imagePreviewArea').classList.remove('hidden');
+                    document.getElementById('imagePreview').src = e.target.result;
+                    document.getElementById('imageFileName').textContent = file.name;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeNewsImage() {
+            document.getElementById('newsImage').value = '';
+            document.getElementById('imageUploadArea').classList.remove('hidden');
+            document.getElementById('imagePreviewArea').classList.add('hidden');
+            document.getElementById('imagePreview').src = '';
+            document.getElementById('imageFileName').textContent = '';
+        }
+
+        // Navigation and UI functions
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function showDashboard() {
+            if (!isLoggedIn) {
+                checkLoginAndShowDashboard();
+                return;
+            }
+            
+            document.getElementById('landingPage').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            showDashboardSection('overview');
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+        }
+
+        function hideDashboard() {
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('landingPage').classList.remove('hidden');
+        }
+
+        function showDashboardSection(section) {
+            if (!isLoggedIn) {
+                checkLoginAndShowDashboard();
+                return;
+            }
+            
+            // Hide all sections
+            document.querySelectorAll('.dashboard-section').forEach(el => el.classList.add('hidden'));
+            
+            // Show selected section
+            document.getElementById(section + 'Section').classList.remove('hidden');
+            
+            // Update navigation
+            document.querySelectorAll('.dashboard-nav-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-50', 'text-blue-600');
+                btn.classList.add('text-gray-700');
+            });
+            
+            const activeBtn = document.querySelector(`[data-section="${section}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-blue-50', 'text-blue-600');
+                activeBtn.classList.remove('text-gray-700');
+            }
+            
+            // Update title
+            const titles = {
+                overview: 'Dashboard Overview',
+                students: 'Data Siswa',
+                teachers: 'Data Guru',
+                classes: 'Data Kelas',
+                news: 'Berita & Artikel',
+                inbox: 'Kotak Masuk'
+            };
+            
+            const subtitles = {
+                overview: 'Selamat datang di panel admin SMK Putra Teknologi',
+                students: 'Kelola data siswa sekolah',
+                teachers: 'Kelola data guru dan staff',
+                classes: 'Kelola data kelas dan ruangan',
+                news: 'Kelola berita dan artikel sekolah',
+                inbox: 'Kelola pesan masuk dari website'
+            };
+            
+            document.getElementById('dashboardTitle').textContent = titles[section];
+            document.getElementById('dashboardSubtitle').textContent = subtitles[section];
+            
+            // Load data for the section
+            switch(section) {
+                case 'overview':
+                    updateOverviewStats();
+                    break;
+                case 'students':
+                    loadStudentsData();
+                    break;
+                case 'teachers':
+                    loadTeachersData();
+                    break;
+                case 'classes':
+                    loadClassesData();
+                    break;
+                case 'news':
+                    loadNewsData();
+                    break;
+                case 'inbox':
+                    loadMessagesData();
+                    break;
+            }
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'Asia/Jakarta'
+            };
+            document.getElementById('currentDateTime').textContent = now.toLocaleDateString('id-ID', options);
+        }
+
+        // Overview functions
+        function updateOverviewStats() {
+            document.getElementById('totalStudents').textContent = students.length;
+            document.getElementById('totalTeachers').textContent = teachers.length;
+            document.getElementById('totalClasses').textContent = classes.length;
+            document.getElementById('heroStudentCount').textContent = students.length + '+';
+            
+            updateMajorDistribution();
+            updateRecentActivities();
+        }
+
+        function updateMajorDistribution() {
+            const distribution = {};
+            students.forEach(student => {
+                distribution[student.major] = (distribution[student.major] || 0) + 1;
+            });
+            
+            const container = document.getElementById('majorDistribution');
+            container.innerHTML = '';
+            
+            const colors = { 'RPL': 'blue', 'TKJ': 'green', 'TEI': 'purple' };
+            const fullNames = { 
+                'RPL': 'Rekayasa Perangkat Lunak', 
+                'TKJ': 'Teknik Komputer Jaringan', 
+                'TEI': 'Teknik Elektronika Industri' 
+            };
+            
+            Object.entries(distribution).forEach(([major, count]) => {
+                const percentage = Math.round((count / students.length) * 100);
+                const color = colors[major] || 'gray';
+                
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between';
+                item.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-4 h-4 bg-${color}-500 rounded"></div>
+                        <span class="text-sm font-medium text-gray-700">${fullNames[major]}</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-gray-600">${count} siswa</span>
+                        <span class="text-xs text-gray-500">(${percentage}%)</span>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function updateRecentActivities() {
+            const container = document.getElementById('recentActivities');
+            container.innerHTML = '';
+            
+            if (recentActivities.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-sm">Belum ada aktivitas terbaru</p>';
+                return;
+            }
+            
+            recentActivities.slice(0, 5).forEach(activity => {
+                const item = document.createElement('div');
+                item.className = 'flex items-start space-x-3 p-3 bg-gray-50 rounded-lg';
+                item.innerHTML = `
+                    <div class="w-2 h-2 bg-${activity.color}-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-800">${activity.message}</p>
+                        <p class="text-xs text-gray-500 mt-1">${formatDateTime(activity.timestamp)}</p>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function addActivity(message, color = 'blue') {
+            recentActivities.unshift({
+                message: message,
+                color: color,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Keep only last 20 activities
+            if (recentActivities.length > 20) {
+                recentActivities = recentActivities.slice(0, 20);
+            }
+            
+            updateRecentActivities();
+        }
+
+        // Students functions
+        function loadStudentsData() {
+            const container = document.getElementById('studentsTableBody');
+            const searchTerm = document.getElementById('searchStudents').value.toLowerCase();
+            const majorFilter = document.getElementById('filterStudentMajor').value;
+            
+            let filteredStudents = students.filter(student => {
+                const matchesSearch = student.name.toLowerCase().includes(searchTerm) || 
+                                    student.nis.includes(searchTerm) ||
+                                    student.email.toLowerCase().includes(searchTerm);
+                const matchesMajor = !majorFilter || student.major === majorFilter;
+                return matchesSearch && matchesMajor;
+            });
+            
+            container.innerHTML = '';
+            
+            filteredStudents.forEach(student => {
+                const row = document.createElement('tr');
+                row.className = 'table-row';
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900">${student.nis}</td>
+                    <td class="px-4 py-3 text-sm font-medium text-gray-900">${student.name}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${student.class}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${student.major}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${student.email}</td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(student.status)}">
+                            ${student.status}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm">
+                        <div class="flex space-x-2">
+                            <button onclick="editStudent(${student.id})" class="action-btn text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="showConfirmModal('Apakah Anda yakin ingin menghapus siswa ${student.name}?', () => deleteStudent(${student.id}))" class="action-btn text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function showAddStudentModal() {
+            currentEditId = null;
+            document.getElementById('studentModalTitle').textContent = 'Tambah Siswa Baru';
+            clearStudentForm();
+            document.getElementById('studentModal').classList.remove('hidden');
+        }
+
+        function editStudent(id) {
+            const student = students.find(s => s.id === id);
+            if (student) {
+                currentEditId = id;
+                document.getElementById('studentModalTitle').textContent = 'Edit Siswa';
+                
+                document.getElementById('studentNIS').value = student.nis;
+                document.getElementById('studentName').value = student.name;
+                document.getElementById('studentClass').value = student.class;
+                document.getElementById('studentMajor').value = student.major;
+                document.getElementById('studentEmail').value = student.email;
+                document.getElementById('studentStatus').value = student.status;
+                
+                document.getElementById('studentModal').classList.remove('hidden');
+            }
+        }
+
+        function hideStudentModal() {
+            document.getElementById('studentModal').classList.add('hidden');
+            clearStudentForm();
+        }
+
+        function clearStudentForm() {
+            document.getElementById('studentNIS').value = '';
+            document.getElementById('studentName').value = '';
+            document.getElementById('studentClass').value = '';
+            document.getElementById('studentMajor').value = '';
+            document.getElementById('studentEmail').value = '';
+            document.getElementById('studentStatus').value = 'Aktif';
+        }
+
+        function saveStudent(event) {
+            event.preventDefault();
+            
+            const nis = document.getElementById('studentNIS').value;
+            const name = document.getElementById('studentName').value;
+            const studentClass = document.getElementById('studentClass').value;
+            const major = document.getElementById('studentMajor').value;
+            const email = document.getElementById('studentEmail').value;
+            const status = document.getElementById('studentStatus').value;
+            
+            if (currentEditId) {
+                // Update existing student
+                const index = students.findIndex(s => s.id === currentEditId);
+                if (index !== -1) {
+                    students[index] = {
+                        ...students[index],
+                        nis, name, class: studentClass, major, email, status
+                    };
+                    addActivity(`Data siswa ${name} diperbarui`, 'green');
+                }
+            } else {
+                // Add new student
+                const newStudent = {
+                    id: Math.max(...students.map(s => s.id)) + 1,
+                    nis, name, class: studentClass, major, email, status
+                };
+                students.push(newStudent);
+                addActivity(`Siswa baru ditambahkan: ${name}`, 'blue');
+            }
+            
+            loadStudentsData();
+            hideStudentModal();
+            updateOverviewStats();
+        }
+
+        function deleteStudent(id) {
+            const student = students.find(s => s.id === id);
+            if (student) {
+                students = students.filter(s => s.id !== id);
+                addActivity(`Siswa ${student.name} dihapus`, 'red');
+                loadStudentsData();
+                updateOverviewStats();
+            }
+        }
+
+        // Teachers functions
+        function loadTeachersData() {
+            const container = document.getElementById('teachersTableBody');
+            const searchTerm = document.getElementById('searchTeachers').value.toLowerCase();
+            const statusFilter = document.getElementById('filterTeacherStatus').value;
+            
+            let filteredTeachers = teachers.filter(teacher => {
+                const matchesSearch = teacher.name.toLowerCase().includes(searchTerm) || 
+                                    teacher.nip.includes(searchTerm) ||
+                                    teacher.subject.toLowerCase().includes(searchTerm) ||
+                                    teacher.email.toLowerCase().includes(searchTerm);
+                const matchesStatus = !statusFilter || teacher.status === statusFilter;
+                return matchesSearch && matchesStatus;
+            });
+            
+            container.innerHTML = '';
+            
+            filteredTeachers.forEach(teacher => {
+                const row = document.createElement('tr');
+                row.className = 'table-row';
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900">${teacher.nip}</td>
+                    <td class="px-4 py-3 text-sm font-medium text-gray-900">${teacher.name}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${teacher.subject}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${teacher.email}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${teacher.phone}</td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(teacher.status)}">
+                            ${teacher.status}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm">
+                        <div class="flex space-x-2">
+                            <button onclick="editTeacher(${teacher.id})" class="action-btn text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="showConfirmModal('Apakah Anda yakin ingin menghapus guru ${teacher.name}?', () => deleteTeacher(${teacher.id}))" class="action-btn text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function showAddTeacherModal() {
+            currentEditId = null;
+            document.getElementById('teacherModalTitle').textContent = 'Tambah Guru Baru';
+            clearTeacherForm();
+            document.getElementById('teacherModal').classList.remove('hidden');
+        }
+
+        function editTeacher(id) {
+            const teacher = teachers.find(t => t.id === id);
+            if (teacher) {
+                currentEditId = id;
+                document.getElementById('teacherModalTitle').textContent = 'Edit Guru';
+                
+                document.getElementById('teacherNIP').value = teacher.nip;
+                document.getElementById('teacherName').value = teacher.name;
+                document.getElementById('teacherSubject').value = teacher.subject;
+                document.getElementById('teacherEmail').value = teacher.email;
+                document.getElementById('teacherPhone').value = teacher.phone;
+                document.getElementById('teacherStatus').value = teacher.status;
+                
+                document.getElementById('teacherModal').classList.remove('hidden');
+            }
+        }
+
+        function hideTeacherModal() {
+            document.getElementById('teacherModal').classList.add('hidden');
+            clearTeacherForm();
+        }
+
+        function clearTeacherForm() {
+            document.getElementById('teacherNIP').value = '';
+            document.getElementById('teacherName').value = '';
+            document.getElementById('teacherSubject').value = '';
+            document.getElementById('teacherEmail').value = '';
+            document.getElementById('teacherPhone').value = '';
+            document.getElementById('teacherStatus').value = 'Aktif';
+        }
+
+        function saveTeacher(event) {
+            event.preventDefault();
+            
+            const nip = document.getElementById('teacherNIP').value;
+            const name = document.getElementById('teacherName').value;
+            const subject = document.getElementById('teacherSubject').value;
+            const email = document.getElementById('teacherEmail').value;
+            const phone = document.getElementById('teacherPhone').value;
+            const status = document.getElementById('teacherStatus').value;
+            
+            if (currentEditId) {
+                // Update existing teacher
+                const index = teachers.findIndex(t => t.id === currentEditId);
+                if (index !== -1) {
+                    teachers[index] = {
+                        ...teachers[index],
+                        nip, name, subject, email, phone, status
+                    };
+                    addActivity(`Data guru ${name} diperbarui`, 'green');
+                }
+            } else {
+                // Add new teacher
+                const newTeacher = {
+                    id: Math.max(...teachers.map(t => t.id)) + 1,
+                    nip, name, subject, email, phone, status
+                };
+                teachers.push(newTeacher);
+                addActivity(`Guru baru ditambahkan: ${name}`, 'blue');
+            }
+            
+            loadTeachersData();
+            hideTeacherModal();
+            updateOverviewStats();
+        }
+
+        function deleteTeacher(id) {
+            const teacher = teachers.find(t => t.id === id);
+            if (teacher) {
+                teachers = teachers.filter(t => t.id !== id);
+                addActivity(`Guru ${teacher.name} dihapus`, 'red');
+                loadTeachersData();
+                updateOverviewStats();
+            }
+        }
+
+        // Classes functions
+        function loadClassesData() {
+            const container = document.getElementById('classesTableBody');
+            const searchTerm = document.getElementById('searchClasses').value.toLowerCase();
+            const majorFilter = document.getElementById('filterClassMajor').value;
+            
+            let filteredClasses = classes.filter(cls => {
+                const matchesSearch = cls.name.toLowerCase().includes(searchTerm) || 
+                                    cls.code.toLowerCase().includes(searchTerm) ||
+                                    cls.teacher.toLowerCase().includes(searchTerm);
+                const matchesMajor = !majorFilter || cls.major === majorFilter;
+                return matchesSearch && matchesMajor;
+            });
+            
+            container.innerHTML = '';
+            
+            filteredClasses.forEach(cls => {
+                const row = document.createElement('tr');
+                row.className = 'table-row';
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900">${cls.code}</td>
+                    <td class="px-4 py-3 text-sm font-medium text-gray-900">${cls.name}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${cls.major}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${cls.teacher}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${cls.capacity}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${cls.studentCount}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <div class="flex space-x-2">
+                            <button onclick="editClass(${cls.id})" class="action-btn text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="showConfirmModal('Apakah Anda yakin ingin menghapus kelas ${cls.name}?', () => deleteClass(${cls.id}))" class="action-btn text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function showAddClassModal() {
+            currentEditId = null;
+            document.getElementById('classModalTitle').textContent = 'Tambah Kelas Baru';
+            clearClassForm();
+            document.getElementById('classModal').classList.remove('hidden');
+        }
+
+        function editClass(id) {
+            const cls = classes.find(c => c.id === id);
+            if (cls) {
+                currentEditId = id;
+                document.getElementById('classModalTitle').textContent = 'Edit Kelas';
+                
+                document.getElementById('classCode').value = cls.code;
+                document.getElementById('className').value = cls.name;
+                document.getElementById('classMajor').value = cls.major;
+                document.getElementById('classTeacher').value = cls.teacher;
+                document.getElementById('classCapacity').value = cls.capacity;
+                document.getElementById('classStudentCount').value = cls.studentCount;
+                
+                document.getElementById('classModal').classList.remove('hidden');
+            }
+        }
+
+        function hideClassModal() {
+            document.getElementById('classModal').classList.add('hidden');
+            clearClassForm();
+        }
+
+        function clearClassForm() {
+            document.getElementById('classCode').value = '';
+            document.getElementById('className').value = '';
+            document.getElementById('classMajor').value = '';
+            document.getElementById('classTeacher').value = '';
+            document.getElementById('classCapacity').value = '';
+            document.getElementById('classStudentCount').value = '';
+        }
+
+        function saveClass(event) {
+            event.preventDefault();
+            
+            const code = document.getElementById('classCode').value;
+            const name = document.getElementById('className').value;
+            const major = document.getElementById('classMajor').value;
+            const teacher = document.getElementById('classTeacher').value;
+            const capacity = parseInt(document.getElementById('classCapacity').value);
+            const studentCount = parseInt(document.getElementById('classStudentCount').value);
+            
+            if (currentEditId) {
+                // Update existing class
+                const index = classes.findIndex(c => c.id === currentEditId);
+                if (index !== -1) {
+                    classes[index] = {
+                        ...classes[index],
+                        code, name, major, teacher, capacity, studentCount
+                    };
+                    addActivity(`Data kelas ${name} diperbarui`, 'green');
+                }
+            } else {
+                // Add new class
+                const newClass = {
+                    id: Math.max(...classes.map(c => c.id)) + 1,
+                    code, name, major, teacher, capacity, studentCount
+                };
+                classes.push(newClass);
+                addActivity(`Kelas baru ditambahkan: ${name}`, 'blue');
+            }
+            
+            loadClassesData();
+            hideClassModal();
+            updateOverviewStats();
+        }
+
+        function deleteClass(id) {
+            const cls = classes.find(c => c.id === id);
+            if (cls) {
+                classes = classes.filter(c => c.id !== id);
+                addActivity(`Kelas ${cls.name} dihapus`, 'red');
+                loadClassesData();
+                updateOverviewStats();
+            }
+        }
+
+        // News functions with image support
+        function loadNewsData() {
+            const container = document.getElementById('newsTableBody');
+            const searchTerm = document.getElementById('searchNews').value.toLowerCase();
+            const categoryFilter = document.getElementById('filterNewsCategory').value;
+            const statusFilter = document.getElementById('filterNewsStatus').value;
+            
+            let filteredNews = news.filter(article => {
+                const matchesSearch = article.title.toLowerCase().includes(searchTerm) || 
+                                    article.excerpt.toLowerCase().includes(searchTerm) ||
+                                    (article.author && article.author.toLowerCase().includes(searchTerm));
+                const matchesCategory = !categoryFilter || article.category === categoryFilter;
+                const matchesStatus = !statusFilter || article.status === statusFilter;
+                return matchesSearch && matchesCategory && matchesStatus;
+            });
+            
+            // Sort by date (newest first)
+            filteredNews.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            container.innerHTML = '';
+            
+            filteredNews.forEach(article => {
+                const row = document.createElement('tr');
+                row.className = 'table-row';
+                row.innerHTML = `
+                    <td class="px-4 py-3">
+                        <div class="max-w-xs">
+                            <p class="text-sm font-medium text-gray-900 truncate">${article.title}</p>
+                            <p class="text-xs text-gray-500 mt-1 truncate">${article.excerpt}</p>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
+                        ${article.image ? 
+                            `<img src="${article.
+
+
+image}" class="w-16 h-12 object-cover rounded" alt="News image">` : 
+                            `<div class="w-16 h-12 bg-gray-200 rounded flex items-center justify-center">
+                                <i class="fas fa-image text-gray-400"></i>
+                            </div>`
+                        }
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-1 text-xs font-medium rounded-full ${getCategoryColor(article.category)}">
+                            ${article.category}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-1 text-xs font-medium rounded-full ${getNewsStatusColor(article.status)}">
+                            ${article.status}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${formatDate(article.date)}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${article.views || 0}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <div class="flex space-x-2">
+                            <button onclick="viewNewsDetail(${article.id})" class="action-btn text-green-600 hover:text-green-800" title="Lihat Detail">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="editNews(${article.id})" class="action-btn text-blue-600 hover:text-blue-800" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="showConfirmModal('Apakah Anda yakin ingin menghapus berita ini? Gambar yang terkait juga akan dihapus.', () => deleteNews(${article.id}))" class="action-btn text-red-600 hover:text-red-800" title="Hapus">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                container.appendChild(row);
+            });
+            
+            // Update landing page news
+            updateLandingPageNews();
+        }
+
+        function showAddNewsModal() {
+            currentEditId = null;
+            document.getElementById('newsModalTitle').textContent = 'Tambah Berita Baru';
+            clearNewsForm();
+            document.getElementById('newsDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('newsAuthor').value = 'Admin SMK Putra Teknologi';
+            document.getElementById('newsModal').classList.remove('hidden');
+        }
+
+        function editNews(id) {
+            const article = news.find(n => n.id === id);
+            if (article) {
+                currentEditId = id;
+                document.getElementById('newsModalTitle').textContent = 'Edit Berita';
+                
+                document.getElementById('newsTitle').value = article.title;
+                document.getElementById('newsCategory').value = article.category;
+                document.getElementById('newsStatus').value = article.status;
+                document.getElementById('newsDate').value = article.date;
+                document.getElementById('newsAuthor').value = article.author || '';
+                document.getElementById('newsTags').value = article.tags || '';
+                document.getElementById('newsExcerpt').value = article.excerpt;
+                document.getElementById('newsContent').value = article.content;
+                
+                // Show existing image if available
+                if (article.image) {
+                    document.getElementById('imageUploadArea').classList.add('hidden');
+                    document.getElementById('imagePreviewArea').classList.remove('hidden');
+                    document.getElementById('imagePreview').src = article.image;
+                    document.getElementById('imageFileName').textContent = 'Gambar saat ini';
+                }
+                
+                document.getElementById('newsModal').classList.remove('hidden');
+            }
+        }
+
+        function viewNewsDetail(id) {
+            const article = news.find(n => n.id === id);
+            if (article) {
+                const modal = document.getElementById('newsDetailModal');
+                const content = document.getElementById('newsDetailContent');
+                
+                content.innerHTML = `
+                    <div class="space-y-6">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900 mb-2">${article.title}</h1>
+                            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-4">
+                                <span><i class="fas fa-calendar mr-1"></i>${formatDate(article.date)}</span>
+                                <span><i class="fas fa-user mr-1"></i>${article.author || 'Admin'}</span>
+                                <span><i class="fas fa-eye mr-1"></i>${article.views || 0} views</span>
+                                <span class="px-2 py-1 text-xs font-medium rounded-full ${getCategoryColor(article.category)}">${article.category}</span>
+                                <span class="px-2 py-1 text-xs font-medium rounded-full ${getNewsStatusColor(article.status)}">${article.status}</span>
+                            </div>
+                            ${article.tags ? `<div class="mb-4"><span class="text-sm text-gray-600">Tags: ${article.tags}</span></div>` : ''}
+                        </div>
+                        
+                        ${article.image ? `
+                            <div class="mb-6">
+                                <img src="${article.image}" alt="${article.title}" class="w-full max-w-2xl mx-auto rounded-lg shadow-md">
+                            </div>
+                        ` : ''}
+                        
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h3 class="font-semibold text-gray-800 mb-2">Ringkasan</h3>
+                            <p class="text-gray-700">${article.excerpt}</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-4">Konten Lengkap</h3>
+                            <div class="prose max-w-none text-gray-700 leading-relaxed">
+                                ${article.content.replace(/\n/g, '<br><br>')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                modal.classList.remove('hidden');
+                
+                // Increment view count
+                article.views = (article.views || 0) + 1;
+                loadNewsData();
+            }
+        }
+
+        function hideNewsModal() {
+            document.getElementById('newsModal').classList.add('hidden');
+            clearNewsForm();
+        }
+
+        function hideNewsDetailModal() {
+            document.getElementById("newsDetailModal").classList.add("hidden");
+        }
+
+        function clearNewsForm() {
+            document.getElementById('newsTitle').value = '';
+            document.getElementById('newsCategory').value = '';
+            document.getElementById('newsStatus').value = 'Draft';
+            document.getElementById('newsDate').value = '';
+            document.getElementById('newsAuthor').value = '';
+            document.getElementById('newsTags').value = '';
+            document.getElementById('newsExcerpt').value = '';
+            document.getElementById('newsContent').value = '';
+            removeNewsImage();
+        }
+
+        function saveNews(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('newsTitle').value;
+            const category = document.getElementById('newsCategory').value;
+            const status = document.getElementById('newsStatus').value;
+            const date = document.getElementById('newsDate').value;
+            const author = document.getElementById('newsAuthor').value;
+            const tags = document.getElementById('newsTags').value;
+            const excerpt = document.getElementById('newsExcerpt').value;
+            const content = document.getElementById('newsContent').value;
+            
+            // Handle image upload
+            const imageFile = document.getElementById('newsImage').files[0];
+            let imageUrl = null;
+            
+            if (imageFile) {
+                // In a real application, you would upload this to a server
+                // For demo purposes, we'll create a data URL
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imageUrl = e.target.result;
+                    saveNewsWithImage(imageUrl);
+                };
+                reader.readAsDataURL(imageFile);
+            } else if (currentEditId) {
+                // Keep existing image if editing and no new image uploaded
+                const existingArticle = news.find(n => n.id === currentEditId);
+                imageUrl = existingArticle ? existingArticle.image : null;
+                saveNewsWithImage(imageUrl);
+            } else {
+                saveNewsWithImage(null);
+            }
+            
+            function saveNewsWithImage(imageUrl) {
+                if (currentEditId) {
+                    // Update existing news
+                    const index = news.findIndex(n => n.id === currentEditId);
+                    if (index !== -1) {
+                        const oldImage = news[index].image;
+                        news[index] = {
+                            ...news[index],
+                            title, category, status, date, author, tags, excerpt, content,
+                            image: imageUrl || oldImage
+                        };
+                        addActivity(`Berita "${title}" diperbarui`, 'green');
+                    }
+                } else {
+                    // Add new news
+                    const newArticle = {
+                        id: Math.max(...news.map(n => n.id)) + 1,
+                        title, category, status, date, author, tags, excerpt, content,
+                        views: 0,
+                        createdAt: new Date().toISOString(),
+                        image: imageUrl
+                    };
+                    news.push(newArticle);
+                    
+                    // Store image reference for deletion tracking
+                    if (imageUrl) {
+                        uploadedImages[newArticle.id] = imageUrl;
+                    }
+                    
+                    addActivity(`Berita baru ditambahkan: "${title}"`, 'blue');
+                }
+                
+                loadNewsData();
+                hideNewsModal();
+            }
+        }
+
+        function deleteNews(id) {
+            const article = news.find(n => n.id === id);
+            if (article) {
+                // Remove image reference if exists
+                if (uploadedImages[id]) {
+                    delete uploadedImages[id];
+                }
+                
+                news = news.filter(n => n.id !== id);
+                addActivity(`Berita "${article.title}" dihapus beserta gambarnya`, 'red');
+                loadNewsData();
+            }
+        }
+
+        function updateLandingPageNews() {
+            const container = document.getElementById('landingNewsGrid');
+            const publishedNews = news.filter(article => article.status === 'Published')
+                                     .sort((a, b) => new Date(b.date) - new Date(a.date))
+                                     .slice(0, 3);
+            
+            container.innerHTML = '';
+            
+            publishedNews.forEach(article => {
+                const newsCard = document.createElement('div');
+                newsCard.className = 'card-hover bg-white rounded-xl shadow-lg overflow-hidden';
+                newsCard.innerHTML = `
+                    <div class="h-48 bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                        ${article.image ? 
+                            `<img src="${article.image}" alt="${article.title}" class="w-full h-full object-cover">` :
+                            `<div class="text-white text-center">
+                                <i class="fas fa-newspaper text-4xl mb-2"></i>
+                                <p class="text-sm">${article.category}</p>
+                            </div>`
+                        }
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-3 py-1 text-xs font-medium rounded-full ${getCategoryColor(article.category)}">
+                                ${article.category}
+                            </span>
+                            <span class="text-xs text-gray-500">${formatDate(article.date)}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-2">${article.title}</h3>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-3">${article.excerpt}</p>
+                        <button onclick="viewNewsDetail(${article.id})" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                            Baca Selengkapnya <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(newsCard);
+            });
+            
+            if (publishedNews.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-3 text-center py-12">
+                        <i class="fas fa-newspaper text-4xl text-gray-400 mb-4"></i>
+                        <p class="text-gray-600">Belum ada berita yang dipublikasikan</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Messages functions
+        function loadMessagesData() {
+            const container = document.getElementById('messagesContainer');
+            const searchTerm = document.getElementById('searchMessages').value.toLowerCase();
+            const categoryFilter = document.getElementById('filterMessageCategory').value;
+            const statusFilter = document.getElementById('filterMessageStatus').value;
+            
+            let filteredMessages = messages.filter(message => {
+                const matchesSearch = message.name.toLowerCase().includes(searchTerm) || 
+                                    message.email.toLowerCase().includes(searchTerm) ||
+                                    message.subject.toLowerCase().includes(searchTerm) ||
+                                    message.message.toLowerCase().includes(searchTerm);
+                const matchesCategory = !categoryFilter || message.category === categoryFilter;
+                const matchesStatus = !statusFilter || message.status === statusFilter;
+                return matchesSearch && matchesCategory && matchesStatus;
+            });
+            
+            // Sort by date (newest first)
+            filteredMessages.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            container.innerHTML = '';
+            
+            filteredMessages.forEach(message => {
+                const messageCard = document.createElement('div');
+                messageCard.className = `border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${
+                    message.status === 'unread' ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-200'
+                }`;
+                messageCard.onclick = () => viewMessageDetail(message.id);
+                
+                messageCard.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <h3 class="font-semibold text-gray-800 ${message.status === 'unread' ? 'font-bold' : ''}">${message.name}</h3>
+                                <span class="px-2 py-1 text-xs font-medium rounded-full ${getCategoryColor(message.category)}">
+                                    ${message.category}
+                                </span>
+                                ${message.status === 'unread' ? '<span class="w-2 h-2 bg-blue-500 rounded-full"></span>' : ''}
+                            </div>
+                            <p class="text-sm text-gray-600 mb-1">${message.email} • ${message.phone || 'No phone'}</p>
+                            <p class="font-medium text-gray-800 mb-2">${message.subject}</p>
+                            <p class="text-sm text-gray-600 line-clamp-2">${message.message}</p>
+                        </div>
+                        <div class="flex flex-col items-end space-y-2 ml-4">
+                            <span class="text-xs text-gray-500">${formatDateTime(message.date)}</span>
+                            <button onclick="event.stopPropagation(); showConfirmModal('Apakah Anda yakin ingin menghapus pesan ini?', () => deleteMessage(${message.id}))" class="action-btn text-red-600 hover:text-red-800" title="Hapus">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(messageCard);
+            });
+            
+            if (filteredMessages.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-inbox text-4xl text-gray-400 mb-4"></i>
+                        <p class="text-gray-600">Tidak ada pesan yang ditemukan</p>
+                    </div>
+                `;
+            }
+            
+            updateUnreadCount();
+        }
+
+        function viewMessageDetail(id) {
+            const message = messages.find(m => m.id === id);
+            if (message) {
+                // Mark as read
+                if (message.status === 'unread') {
+                    message.status = 'read';
+                    updateUnreadCount();
+                    loadMessagesData();
+                }
+                
+                const modal = document.getElementById('messageDetailModal');
+                const content = document.getElementById('messageDetailContent');
+                
+                content.innerHTML = `
+                    <div class="space-y-6">
+                        <div class="border-b border-gray-200 pb-4">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h2 class="text-xl font-bold text-gray-900">${message.subject}</h2>
+                                    <div class="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+                                        <span><i class="fas fa-user mr-1"></i>${message.name}</span>
+                                        <span><i class="fas fa-envelope mr-1"></i>${message.email}</span>
+                                        ${message.phone ? `<span><i class="fas fa-phone mr-1"></i>${message.phone}</span>` : ''}
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="px-3 py-1 text-xs font-medium rounded-full ${getCategoryColor(message.category)}">
+                                        ${message.category}
+                                    </span>
+                                    <p class="text-xs text-gray-500 mt-2">${formatDateTime(message.date)}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-3">Pesan</h3>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p class="text-gray-700 leading-relaxed whitespace-pre-wrap">${message.message}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                            <button onclick="replyToMessage(${message.id})" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                <i class="fas fa-reply mr-2"></i>Balas
+                            </button>
+                            <button onclick="showConfirmModal('Apakah Anda yakin ingin menghapus pesan ini?', () => { deleteMessage(${message.id}); hideMessageDetailModal(); })" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                                <i class="fas fa-trash mr-2"></i>Hapus
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function hideMessageDetailModal() {
+            document.getElementById('messageDetailModal').classList.add('hidden');
+        }
+
+        function replyToMessage(id) {
+            const message = messages.find(m => m.id === id);
+            if (message) {
+                // In a real application, this would open an email client or compose window
+                const subject = `Re: ${message.subject}`;
+                const body = `\n\n--- Pesan Asli ---\nDari: ${message.name} <${message.email}>\nTanggal: ${formatDateTime(message.date)}\nSubjek: ${message.subject}\n\n${message.message}`;
+                
+                const mailtoLink = `mailto:${message.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                window.open(mailtoLink);
+                
+                addActivity(`Membalas pesan dari ${message.name}`, 'blue');
+            }
+        }
+
+        function deleteMessage(id) {
+            const message = messages.find(m => m.id === id);
+            if (message) {
+                messages = messages.filter(m => m.id !== id);
+                addActivity(`Pesan dari ${message.name} dihapus`, 'red');
+                loadMessagesData();
+            }
+        }
+
+        function deleteAllMessages() {
+            if (messages.length === 0) {
+                alert('Tidak ada pesan untuk dihapus.');
+                return;
+            }
+            
+            const messageCount = messages.length;
+            if (confirm(`Apakah Anda yakin ingin menghapus semua ${messageCount} pesan? Tindakan ini tidak dapat dibatalkan.`)) {
+                messages = [];
+                addActivity(`${messageCount} pesan dihapus semua`, 'red');
+                loadMessagesData();
+                alert(`${messageCount} pesan berhasil dihapus.`);
+            }
+        }
+
+        function updateUnreadCount() {
+            const unreadCount = messages.filter(m => m.status === 'unread').length;
+            const badge = document.getElementById('unreadCount');
+            
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        // Contact form function
+        function submitContactForm(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const phone = document.getElementById('contactPhone').value;
+            const category = document.getElementById('contactCategory').value;
+            const subject = document.getElementById('contactSubject').value;
+            const message = document.getElementById('contactMessage').value;
+            
+            // Add to messages
+            const newMessage = {
+                id: Math.max(...messages.map(m => m.id)) + 1,
+                name, email, phone, category, subject, message,
+                date: new Date().toISOString(),
+                status: 'unread'
+            };
+            
+            messages.unshift(newMessage);
+            updateUnreadCount();
+            
+            // Clear form
+            event.target.reset();
+            
+            // Show success message
+            alert('Pesan Anda berhasil dikirim! Kami akan segera merespons.');
+            
+            addActivity(`Pesan baru diterima dari ${name}`, 'green');
+        }
+
+        // Utility functions
+        function getStatusColor(status) {
+            switch(status) {
+                case 'Aktif': return 'bg-green-100 text-green-800';
+                case 'Cuti': return 'bg-yellow-100 text-yellow-800';
+                case 'Non-Aktif': return 'bg-red-100 text-red-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        function getCategoryColor(category) {
+            switch(category) {
+                case 'Prestasi': return 'bg-yellow-100 text-yellow-800';
+                case 'Kegiatan': return 'bg-blue-100 text-blue-800';
+                case 'Pengumuman': return 'bg-red-100 text-red-800';
+                case 'Kerjasama': return 'bg-green-100 text-green-800';
+                case 'Informasi Pendaftaran': return 'bg-purple-100 text-purple-800';
+                case 'Program Keahlian': return 'bg-indigo-100 text-indigo-800';
+                case 'Fasilitas': return 'bg-pink-100 text-pink-800';
+                case 'Lainnya': return 'bg-gray-100 text-gray-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        function getNewsStatusColor(status) {
+            switch(status) {
+                case 'Published': return 'bg-green-100 text-green-800';
+                case 'Draft': return 'bg-yellow-100 text-yellow-800';
+                case 'Archived': return 'bg-gray-100 text-gray-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Confirmation modal functions
+        function showConfirmModal(message, callback) {
+            document.getElementById('confirmMessage').textContent = message;
+            deleteCallback = callback;
+            document.getElementById('confirmModal').classList.remove('hidden');
+        }
+
+        function hideConfirmModal() {
+            document.getElementById('confirmModal').classList.add('hidden');
+            deleteCallback = null;
+        }
+
+        function confirmDelete() {
+            if (deleteCallback) {
+                deleteCallback();
+                deleteCallback = null;
+            }
+            hideConfirmModal();
+        }
+
+        // Search and filter event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Students search and filter
+            document.getElementById('searchStudents').addEventListener('input', loadStudentsData);
+            document.getElementById('filterStudentMajor').addEventListener('change', loadStudentsData);
+            
+            // Teachers search and filter
+            document.getElementById('searchTeachers').addEventListener('input', loadTeachersData);
+            document.getElementById('filterTeacherStatus').addEventListener('change', loadTeachersData);
+            
+            // Classes search and filter
+            document.getElementById('searchClasses').addEventListener('input', loadClassesData);
+            document.getElementById('filterClassMajor').addEventListener('change', loadClassesData);
+            
+            // News search and filter
+            document.getElementById('searchNews').addEventListener('input', loadNewsData);
+            document.getElementById('filterNewsCategory').addEventListener('change', loadNewsData);
+            document.getElementById('filterNewsStatus').addEventListener('change', loadNewsData);
+            
+            // Messages search and filter
+            document.getElementById('searchMessages').addEventListener('input', loadMessagesData);
+            document.getElementById('filterMessageCategory').addEventListener('change', loadMessagesData);
+            document.getElementById('filterMessageStatus').addEventListener('change', loadMessagesData);
+            
+            // Initialize data
+            updateOverviewStats();
+            updateLandingPageNews();
+            updateUnreadCount();
+            
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            // Check if user should be redirected to dashboard
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('dashboard') === 'true') {
+                checkLoginAndShowDashboard();
+            }
+        });
+    </script>
+</body>
+</html>
+
